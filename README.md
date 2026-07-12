@@ -1,9 +1,6 @@
 # ROBBIN: Rowhammer-Based Backdoor Injection during Inference
 
-A comprehensive hardware-aware inference-time backdoor attack framework that exploits RowHammer vulnerabilities to inject backdoors into deployed Deep Neural Networks (DNNs) without modifying the model files.
-
-
-**This repository contains the code corresponding to paper #333 under submission at ICCAD 2026.**
+A comprehensive hardware-aware inference-time backdoor attack framework that exploits RowHammer vulnerabilities to inject backdoors into deployed Deep Neural Networks (DNNs) without modifying the model files. This repository contains the code to replicate the results in the accepted paper titled "ROBBIN: \underline{Ro}whammer-\underline{B}ased \underline{B}ackdoor \underline{In}jection during Inference" at ICCAD 2026. 
 
 
 
