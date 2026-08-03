@@ -12,7 +12,7 @@
     <meta property="og:image" content="https://noisyor.github.io/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference/assets/robbin-og.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="assets/robbin-robin-emblem.png?v=20260803b" />
-    <link rel="stylesheet" href="assets/site.css?v=20260803g" />
+    <link rel="stylesheet" href="assets/site.css?v=20260803h" />
     <script src="assets/site.js?v=20260803c" defer></script>
     <title>ROBBIN · Rowhammer-Based Backdoor Injection during Inference</title>
   </head>
@@ -137,12 +137,11 @@
             <aside class="formula-card">
               <span class="control-label">Direction-aware page score</span>
               <div class="score-equation" role="img" aria-label="r sub p equals V zero to one times s sub p zero to one, plus V one to zero times s sub p one to zero">
-                <span class="equation-lhs"><i>r</i><sub>p</sub></span>
-                <span class="equation-equals">=</span>
-                <span class="equation-rhs">
-                  <span><i>V</i><sup>0→1</sup><i>s</i><sub>p</sub><sup>0→1</sup></span>
-                  <span><b>+</b><i>V</i><sup>1→0</sup><i>s</i><sub>p</sub><sup>1→0</sup></span>
-                </span>
+                <span class="equation-symbol"><i>r</i><sub>p</sub></span>
+                <span class="equation-operator">=</span>
+                <span class="equation-term"><i>V</i><sup>0→1</sup><i>s</i><sub>p</sub><sup>0→1</sup></span>
+                <span class="equation-operator equation-plus">+</span>
+                <span class="equation-term"><i>V</i><sup>1→0</sup><i>s</i><sub>p</sub><sup>1→0</sup></span>
               </div>
               <p class="equation-note">Available hardware faults × model sensitivity, summed over both flip directions.</p>
               <dl><div><dt>Candidate pool</dt><dd>Top-K, typically 20</dd></div><div><dt>Constraint</dt><dd>Target ASR + TA floor</dd></div><div><dt>Output</dt><dd>DNN → DRAM pages</dd></div></dl>
