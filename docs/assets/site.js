@@ -1,11 +1,11 @@
 (() => {
-  const repoUrl = "https://github.com/noisyor/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference.git";
+  const repo = "https://github.com/noisyor/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference.git";
   const quickstarts = {
     "sample-int8": {
-      label: "Sample profile · INT8",
+      label: "Sample · INT8",
       title: "Reproduce with the supplied profile",
-      note: "CIFAR-10 downloads automatically. The INT8 runner expects a native INT8 checkpoint with scale factors at the path shown below.",
-      code: `git clone ${repoUrl}
+      note: "CIFAR-10 downloads automatically. Add a native INT8 checkpoint at the path below.",
+      code: `git clone ${repo}
 cd ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference
 
 python -m venv .venv
@@ -19,14 +19,13 @@ cp /path/to/ResNet20_INT8.pth.tar saved_models/ResNet20_INT8.pth.tar
 python analyze_memory_layout.py \\
   --model saved_models/ResNet20_INT8.pth.tar \\
   --output pagemaps/ResNet20_INT8_pagemap.txt
-
 python main_8bit_mvm.py`
     },
     "sample-fp32": {
-      label: "Sample profile · FP32",
+      label: "Sample · FP32",
       title: "Reproduce with the supplied profile",
-      note: "CIFAR-10 downloads automatically. The current FP32 runner expects CUDA and the ResNet-20 checkpoint path shown below.",
-      code: `git clone ${repoUrl}
+      note: "CIFAR-10 downloads automatically. The current FP32 runner expects CUDA.",
+      code: `git clone ${repo}
 cd ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference
 
 python -m venv .venv
@@ -40,17 +39,15 @@ cp /path/to/model_best.pth.tar saved_model/resnet20_fp32/model_best.pth.tar
 python analyze_memory_layout.py \\
   --model saved_model/resnet20_fp32/model_best.pth.tar \\
   --output pagemaps/resnet20_fp32_pagemap.txt
-
 python main_32bit_mvm.py`
     },
     "custom-int8": {
-      label: "My DRAM profile · INT8",
-      title: "Use a profile from your test system",
-      note: "Profile only authorized hardware. After conversion, set profiling_file in main_8bit_mvm.py to profile_results/custom.npy before running.",
-      code: `# First complete the sample-profile setup, then convert your
-# authorized Blacksmith JSON profile into ROBBIN's matrix format.
+      label: "My DRAM · INT8",
+      title: "Use an authorized DRAM profile",
+      note: "Set profiling_file in main_8bit_mvm.py to profile_results/custom.npy.",
+      code: `# Complete the sample setup first, then convert your profile.
 python create_bitflip_matrix.py \\
-  --profile /path/to/your_profile.json \\
+  --profile /path/to/profile.json \\
   --output profile_results/custom.npy
 
 # In main_8bit_mvm.py, set:
@@ -59,17 +56,15 @@ python create_bitflip_matrix.py \\
 python analyze_memory_layout.py \\
   --model saved_models/ResNet20_INT8.pth.tar \\
   --output pagemaps/ResNet20_INT8_pagemap.txt
-
 python main_8bit_mvm.py`
     },
     "custom-fp32": {
-      label: "My DRAM profile · FP32",
-      title: "Use a profile from your test system",
-      note: "Profile only authorized hardware. After conversion, set profiling_file in main_32bit_mvm.py to profile_results/custom.npy before running.",
-      code: `# First complete the sample-profile setup, then convert your
-# authorized Blacksmith JSON profile into ROBBIN's matrix format.
+      label: "My DRAM · FP32",
+      title: "Use an authorized DRAM profile",
+      note: "Set profiling_file in main_32bit_mvm.py to profile_results/custom.npy.",
+      code: `# Complete the sample setup first, then convert your profile.
 python create_bitflip_matrix.py \\
-  --profile /path/to/your_profile.json \\
+  --profile /path/to/profile.json \\
   --output profile_results/custom.npy
 
 # In main_32bit_mvm.py, set:
@@ -78,47 +73,80 @@ python create_bitflip_matrix.py \\
 python analyze_memory_layout.py \\
   --model saved_model/resnet20_fp32/model_best.pth.tar \\
   --output pagemaps/resnet20_fp32_pagemap.txt
-
 python main_32bit_mvm.py`
     }
   };
 
-  const results = {
+  const resultData = {
     int8: {
       src: "assets/figures/int8-results.png",
-      alt: "INT8 attack success rate and test accuracy for ROBBIN and Don't Knock across three DRAM devices.",
-      caption: "<strong>INT8 ResNet-20.</strong> ROBBIN reaches roughly 90% ASR on all three devices while retaining 83.0–87.0% clean test accuracy.",
-      cards: [
-        ["Device consistency", "90.2 / 90.1 / 90.9%", "ASR on Devices A, B, and C."],
-        ["Clean accuracy", "83.0–87.0%", "TA after the INT8 attack."],
-        ["Page efficiency", "64–73% fewer", "DRAM pages than Don’t Knock on ResNet-20."]
-      ]
+      alt: "INT8 attack success and test accuracy across three devices.",
+      caption: "INT8 ResNet-20 · ROBBIN versus Don’t Knock",
+      asr: "90.2 / 90.1 / 90.9%",
+      ta: "83.0–87.0%",
+      thirdLabel: "Page efficiency",
+      efficiency: "64–73% fewer",
+      note: "Pages than Don’t Knock"
     },
     fp32: {
       src: "assets/figures/fp32-results.png",
-      alt: "FP32 attack success rate and test accuracy for ROBBIN and OneFlip across three DRAM devices.",
-      caption: "<strong>FP32 ResNet-20.</strong> ROBBIN maintains about 90% ASR and 85–86% TA across all devices; OneFlip degrades sharply on denser fault profiles.",
-      cards: [
-        ["Device consistency", "90.7 / 90.0 / 90.2%", "ASR on Devices A, B, and C."],
-        ["Clean accuracy", "85.0–86.0%", "TA after the FP32 attack."],
-        ["Collateral damage", "64.2% TA", "OneFlip on the densest evaluated profile."]
-      ]
+      alt: "FP32 attack success and test accuracy across three devices.",
+      caption: "FP32 ResNet-20 · ROBBIN versus OneFlip",
+      asr: "90.7 / 90.0 / 90.2%",
+      ta: "85.0–86.0%",
+      thirdLabel: "Collateral damage",
+      efficiency: "64.2% TA",
+      note: "OneFlip on the densest profile"
     }
   };
 
+  const tabs = [...document.querySelectorAll("[data-tab]")];
+  const panels = [...document.querySelectorAll(".tab-panel")];
+
+  function activateTab(id, updateHash = true) {
+    const target = document.getElementById(id);
+    if (!target) return;
+    tabs.forEach((tab) => {
+      const active = tab.dataset.tab === id;
+      tab.setAttribute("aria-selected", String(active));
+      tab.tabIndex = active ? 0 : -1;
+    });
+    panels.forEach((panel) => { panel.hidden = panel.id !== id; });
+    if (updateHash) history.replaceState(null, "", `#${id}`);
+  }
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => activateTab(tab.dataset.tab));
+    tab.addEventListener("keydown", (event) => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      let next = index;
+      if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
+      if (event.key === "ArrowLeft") next = (index - 1 + tabs.length) % tabs.length;
+      if (event.key === "Home") next = 0;
+      if (event.key === "End") next = tabs.length - 1;
+      tabs[next].focus();
+      activateTab(tabs[next].dataset.tab);
+    });
+  });
+
+  document.querySelectorAll("[data-tab-link]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      activateTab(link.dataset.tabLink);
+    });
+  });
+
+  window.addEventListener("hashchange", () => activateTab(location.hash.slice(1) || "overview", false));
+
   let profile = "sample";
   let precision = "int8";
-  const code = document.querySelector("#quickstart-code");
-  const runPathLabel = document.querySelector("#run-path-label");
-  const commandTitle = document.querySelector("#command-title");
-  const commandNote = document.querySelector("#command-note");
-
   function renderQuickstart() {
     const item = quickstarts[`${profile}-${precision}`];
-    code.textContent = item.code;
-    runPathLabel.textContent = item.label;
-    commandTitle.textContent = item.title;
-    commandNote.innerHTML = `<strong>Before you run:</strong> ${item.note}`;
+    document.getElementById("run-path-label").textContent = item.label;
+    document.getElementById("command-title").textContent = item.title;
+    document.getElementById("quickstart-code").textContent = item.code;
+    document.getElementById("command-note").innerHTML = `<strong>Before you run:</strong> ${item.note}`;
   }
 
   document.querySelectorAll("[data-profile]").forEach((button) => {
@@ -137,42 +165,33 @@ python main_32bit_mvm.py`
     });
   });
 
-  document.querySelectorAll(".copy-button").forEach((button) => {
-    button.addEventListener("click", async () => {
-      const target = document.getElementById(button.dataset.copyTarget);
-      const label = button.textContent;
-      try {
-        await navigator.clipboard.writeText(target.textContent);
-        button.textContent = "Copied";
-        setTimeout(() => { button.textContent = label; }, 1600);
-      } catch {
-        button.textContent = "Select and copy";
-      }
-    });
-  });
-
   document.querySelectorAll("[data-result]").forEach((button) => {
     button.addEventListener("click", () => {
-      const item = results[button.dataset.result];
-      document.querySelectorAll("[data-result]").forEach((tab) => tab.setAttribute("aria-pressed", String(tab === button)));
-      const image = document.querySelector("#result-image");
-      image.src = item.src;
-      image.alt = item.alt;
-      document.querySelector("#result-caption").innerHTML = item.caption;
-      document.querySelector("#result-cards").innerHTML = item.cards.map(([label, value, note]) => `<article><span>${label}</span><strong>${value}</strong><p>${note}</p></article>`).join("");
+      const data = resultData[button.dataset.result];
+      document.querySelectorAll("[data-result]").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+      Object.assign(document.getElementById("result-image"), { src: data.src, alt: data.alt });
+      document.getElementById("result-caption").textContent = data.caption;
+      document.getElementById("result-asr").textContent = data.asr;
+      document.getElementById("result-ta").textContent = data.ta;
+      document.getElementById("result-third-label").textContent = data.thirdLabel;
+      document.getElementById("result-efficiency").textContent = data.efficiency;
+      document.getElementById("result-efficiency-note").textContent = data.note;
     });
   });
 
-  const sectionLinks = [...document.querySelectorAll('.site-tabs a[href^="#"]')];
-  const sections = sectionLinks.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) return;
-      sectionLinks.forEach((link) => link.toggleAttribute("aria-current", link.getAttribute("href") === `#${visible.target.id}`));
-    }, { rootMargin: "-20% 0px -65%", threshold: [0, 0.2, 0.5] });
-    sections.forEach((section) => observer.observe(section));
-  }
+  document.querySelectorAll(".copy-button").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const original = button.textContent;
+      try {
+        await navigator.clipboard.writeText(document.getElementById(button.dataset.copyTarget).textContent);
+        button.textContent = "Copied";
+      } catch {
+        button.textContent = "Select text";
+      }
+      setTimeout(() => { button.textContent = original; }, 1500);
+    });
+  });
 
+  activateTab(location.hash.slice(1) || "overview", false);
   renderQuickstart();
 })();
