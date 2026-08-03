@@ -114,13 +114,16 @@ code { font: 500 var(--text-xs)/1.58 ui-monospace, SFMono-Regular, Menlo, Consol
 .workflow-strip strong { color: var(--ink); font-size: var(--text-xs); }
 
 .method-layout { height: calc(100% - 108px); display: grid; grid-template-columns: .9fr 1.2fr .9fr; gap: 18px; }
+.method-panel .panel-heading > p { font-size: var(--text-base); }
+.method-panel .kicker, .formula-card .control-label { font-size: var(--text-sm); }
 .method-steps { display: grid; grid-template-rows: repeat(4, 1fr); gap: 8px; }
 .method-steps article { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: rgba(255,255,255,.74); border: 1px solid var(--line); border-radius: 13px; }
-.method-steps article > span { color: var(--orchid); font: 700 var(--text-xs)/1 ui-monospace, monospace; }
-.method-steps h3 { margin: 0 0 3px; font-size: var(--text-sm); }
-.method-steps p { margin: 0; color: var(--muted); font-size: var(--text-xs); }
+.method-steps article > span { color: var(--orchid); font: 700 var(--text-sm)/1 ui-monospace, monospace; }
+.method-steps h3 { margin: 0 0 5px; font-size: var(--text-lg); font-weight: 500; }
+.method-steps p { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.45; }
 .profile-figure { display: flex; flex-direction: column; justify-content: center; margin: 0; padding: 18px; box-shadow: none; }
 .profile-figure img { width: 100%; max-height: calc(100% - 32px); object-fit: contain; }
+.profile-figure figcaption { font-size: var(--text-sm); line-height: 1.45; }
 .formula-card { align-self: stretch; display: flex; flex-direction: column; padding: 24px; background: linear-gradient(145deg, #fff, #f5edf7); box-shadow: none; }
 .score-equation { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 12px; align-items: center; margin: clamp(24px, 5vh, 48px) 0 16px; padding: 20px 18px; color: var(--plum); background: rgba(255,255,255,.72); border: 1px solid var(--line); border-radius: 12px; font-family: "Cambria Math", "STIX Two Math", Georgia, serif; font-size: clamp(1.2rem, 1.6vw, 1.5rem); line-height: 1.25; }
 .equation-lhs { white-space: nowrap; }
@@ -130,9 +133,9 @@ code { font: 500 var(--text-xs)/1.58 ui-monospace, SFMono-Regular, Menlo, Consol
 .equation-rhs b { display: inline-block; width: 22px; color: var(--orchid); font-weight: 400; }
 .score-equation i { font-style: italic; }
 .score-equation sup, .score-equation sub { font-size: .62em; line-height: 0; }
-.equation-note { margin: 0; color: var(--muted); font-size: var(--text-sm); }
+.equation-note { margin: 0; color: var(--muted); font-size: var(--text-base); line-height: 1.5; }
 .formula-card dl { margin: auto 0 0; border-top: 1px solid var(--line); }
-.formula-card dl div { display: flex; justify-content: space-between; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: var(--text-xs); }
+.formula-card dl div { display: flex; justify-content: space-between; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: var(--text-sm); }
 .formula-card dt { color: var(--muted); }
 .formula-card dd { margin: 0; font-weight: 700; text-align: right; }
 
