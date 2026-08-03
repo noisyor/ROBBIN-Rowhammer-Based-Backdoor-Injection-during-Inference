@@ -12,7 +12,7 @@
     <meta property="og:image" content="https://noisyor.github.io/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference/assets/robbin-og.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="assets/robbin-robin-emblem.png" />
-    <link rel="stylesheet" href="assets/site.css?v=20260803b" />
+    <link rel="stylesheet" href="assets/site.css?v=20260803c" />
     <script src="assets/site.js?v=20260803b" defer></script>
     <title>ROBBIN · Rowhammer-Based Backdoor Injection during Inference</title>
   </head>
@@ -51,7 +51,10 @@
           </div>
 
           <div class="overview-visual">
-            <div class="crest-watermark" aria-hidden="true"><img src="assets/robbin-robin-emblem.png" alt="" /></div>
+            <div class="emblem-showcase">
+              <img src="assets/robbin-robin-emblem.png" alt="ROBBIN emblem showing hands hammering DRAM aggressor rows and disrupting victim-row bits" />
+              <div><strong>Hardware-aware by design</strong><span>Aggressor rows disturb the victim-row bits the model actually occupies.</span></div>
+            </div>
             <figure class="paper-card">
               <img src="assets/figures/attack-overview.png" alt="A clean car input is classified correctly, while a triggered car input is mapped to a bird after profiled Rowhammer bit flips." />
               <figcaption><strong>Attack overview</strong><span>Device-specific fault maps guide backdoor construction.</span></figcaption>
