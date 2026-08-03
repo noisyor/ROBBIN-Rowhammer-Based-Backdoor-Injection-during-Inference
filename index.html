@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101923" />
+    <meta name="description" content="ROBBIN is a hardware-aware inference-time backdoor attack that maps device-specific Rowhammer faults to DNN model pages." />
+    <meta property="og:title" content="ROBBIN · Rowhammer-Based Backdoor Injection during Inference" />
+    <meta property="og:description" content="Explore how device-specific DRAM faults can be mapped to targeted neural-network behavior." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://noisyor.github.io/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference/" />
+    <meta property="og:image" content="https://noisyor.github.io/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference/assets/robbin-og.png" />
+    <meta property="og:image:alt" content="ROBBIN project title beside a sparse memory-cell grid and signal trace" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://noisyor.github.io/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference/assets/robbin-og.png" />
+    <link rel="stylesheet" href="assets/site.css" />
+    <script src="assets/site.js" defer></script>
+    <title>ROBBIN · Rowhammer-Based Backdoor Injection during Inference</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="project-header">
+      <div class="shell header-inner">
+        <a class="project-name" href="./" aria-label="ROBBIN home"><span aria-hidden="true"></span> ROBBIN</a>
+        <a class="repo-link" href="https://github.com/noisyor/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference">View on GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero">
+        <div class="shell hero-grid">
+          <div>
+            <p class="eyebrow">ICCAD 2026 · To appear</p>
+            <h1>ROBBIN<span>Rowhammer-Based Backdoor Injection during Inference</span></h1>
+            <p class="summary">A hardware-aware attack framework that works with the faults a real DRAM device can produce—not arbitrary bit flips imagined in software.</p>
+            <div class="actions">
+              <a class="button" href="#explore">Explore the evidence</a>
+              <a class="button secondary" href="https://github.com/noisyor/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference">Code and artifacts ↗</a>
+            </div>
+          </div>
+          <div class="memory-window" aria-label="Illustration of sparse profiled memory cells">
+            <div class="memory-window-header"><span>Device profile / sparse faults</span><span class="memory-led" aria-hidden="true"></span></div>
+            <div class="memory-grid" id="memory-grid" aria-hidden="true"></div>
+            <p class="memory-caption"><span><i class="mapped-key" aria-hidden="true"></i> mapped DNN page</span><span><i class="fault-key" aria-hidden="true"></i> stable vulnerable cell</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="Project highlights">
+        <div class="shell metric-grid">
+          <div class="metric"><strong>~90%</strong><span>Attack success rate</span></div>
+          <div class="metric"><strong>&gt;83%</strong><span>Benign test accuracy</span></div>
+          <div class="metric"><strong>3</strong><span>DDR4 chips evaluated</span></div>
+          <div class="metric"><strong>FP32 + INT8</strong><span>Data types</span></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell">
+          <header class="section-header">
+            <span class="section-index">01 / The gap</span>
+            <div><h2>A practical attack must obey the memory.</h2><p>Software-only studies often choose whichever model bits are most useful to flip. Physical Rowhammer faults are rare, device-specific, directional, and tied to particular DRAM locations. ROBBIN starts from those constraints.</p></div>
+          </header>
+          <div class="attack-chain">
+            <article class="attack-step"><span>01</span><h3>Profile</h3><p>Measure stable fault patterns on the target DRAM at higher hammering intensity.</p></article>
+            <article class="attack-step"><span>02</span><h3>Score</h3><p>Rank model pages by how useful the available 0→1 and 1→0 flips would be.</p></article>
+            <article class="attack-step"><span>03</span><h3>Map</h3><p>Pair high-value DNN pages with physically vulnerable DRAM pages.</p></article>
+            <article class="attack-step"><span>04</span><h3>Inject</h3><p>Iteratively select pages while balancing triggered behavior and benign accuracy.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="explore">
+        <div class="shell">
+          <header class="section-header">
+            <span class="section-index">02 / Evidence explorer</span>
+            <div><h2>Watch the attack progress, one page mapping at a time.</h2><p>Switch precision and move through the included sample reports. The chart tracks attack success on triggered inputs against accuracy on benign inputs.</p></div>
+          </header>
+          <div class="explorer">
+            <div class="explorer-controls">
+              <span class="control-label">Model precision</span>
+              <div class="precision-toggle" role="group" aria-label="Select model precision">
+                <button type="button" data-precision="fp32" aria-pressed="true">FP32</button>
+                <button type="button" data-precision="int8" aria-pressed="false">INT8</button>
+              </div>
+              <label class="control-label" for="attack-progress">Applied page mappings</label>
+              <div class="progress-control">
+                <input id="attack-progress" type="range" min="0" max="48" value="48" step="1" />
+                <div class="progress-scale"><span>Trigger only</span><span id="progress-max">48 pages</span></div>
+              </div>
+              <p class="explorer-note">Values are reproduced from the sample FP32 and INT8 attack reports included in this repository. They describe a profiled experimental configuration, not arbitrary hardware.</p>
+            </div>
+            <div class="explorer-view">
+              <div class="explorer-topline"><p>Configuration: <strong id="config-label">ResNet-20 / CIFAR-10 / FP32</strong></p><p id="status-label">Target ASR reached</p></div>
+              <div class="chart-wrap"><canvas id="robbin-chart" role="img" aria-label="Line chart of attack success rate and benign accuracy as mappings are applied"></canvas></div>
+              <div class="chart-legend"><span class="legend-key">Attack success rate</span><span class="legend-key accuracy">Benign accuracy</span></div>
+              <div class="current-readout" aria-live="polite">
+                <div><span>Page mappings</span><strong id="mapping-value">48</strong></div>
+                <div><span>Attack success</span><strong id="asr-value">90.00%</strong></div>
+                <div><span>Benign accuracy</span><strong id="accuracy-value">85.00%</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell">
+          <header class="section-header">
+            <span class="section-index">03 / Contributions</span>
+            <div><h2>From idealized flips to device-aware injection.</h2></div>
+          </header>
+          <div class="contribution-grid">
+            <article class="contribution-card"><span>Hardware reality</span><h3>Deterministic profiling</h3><p>Finds stable and reproducible flip patterns that persist despite on-die error correction.</p></article>
+            <article class="contribution-card"><span>Optimization</span><h3>Direction-aware matching</h3><p>Scores model–memory mappings using the actual direction and location of available faults.</p></article>
+            <article class="contribution-card"><span>Evaluation</span><h3>Cross-device consistency</h3><p>Evaluates the framework across three DDR4 chips and both FP32 and native INT8 models.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="shell citation" aria-labelledby="paper-title">
+        <div>
+          <p class="eyebrow">Paper</p>
+          <h2 id="paper-title">ROBBIN: Rowhammer-Based Backdoor Injection during Inference</h2>
+          <p class="authors">Saion Kumar Roy, Yufei Wang, A. Adam Ding, and Yunsi Fei</p>
+          <p class="venue">IEEE/ACM International Conference on Computer-Aided Design, 2026 · To appear</p>
+        </div>
+        <a class="button" href="https://github.com/noisyor/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference">Open repository ↗</a>
+      </section>
+    </main>
+
+    <footer><div class="shell footer-inner"><span>ROBBIN · Research use only</span><a href="https://github.com/noisyor/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference">GitHub repository ↗</a></div></footer>
+  </body>
+</html>
