@@ -12,8 +12,8 @@
     <meta property="og:image" content="https://noisyor.github.io/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference/assets/robbin-og.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="assets/robbin-robin-emblem.png" />
-    <link rel="stylesheet" href="assets/site.css?v=20260803c" />
-    <script src="assets/site.js?v=20260803b" defer></script>
+    <link rel="stylesheet" href="assets/site.css?v=20260803d" />
+    <script src="assets/site.js?v=20260803c" defer></script>
     <title>ROBBIN · Rowhammer-Based Backdoor Injection during Inference</title>
   </head>
   <body>
@@ -71,7 +71,7 @@
 
         <section class="tab-panel use-panel" id="use" role="tabpanel" aria-labelledby="tab-use" tabindex="0" hidden>
           <header class="panel-heading">
-            <div><p class="kicker">Use ROBBIN</p><h2>Checkpoint → device-aware attack report</h2></div>
+            <div><p class="kicker">Use ROBBIN</p><h2>From checkpoint to attack report.</h2></div>
             <p>Begin with the supplied profile. Move to an authorized hardware profile after the software path works end to end.</p>
           </header>
 
@@ -117,7 +117,7 @@
 
         <section class="tab-panel method-panel" id="method" role="tabpanel" aria-labelledby="tab-method" tabindex="0" hidden>
           <header class="panel-heading">
-            <div><p class="kicker">The method</p><h2>Let the hardware fault map lead.</h2></div>
+            <div><p class="kicker">The method</p><h2>Hardware fault map first.</h2></div>
             <p>ROBBIN selects mappings from the flips a real target device can produce, rather than hoping idealized model flips are physically realizable.</p>
           </header>
 
@@ -136,7 +136,15 @@
 
             <aside class="formula-card">
               <span class="control-label">Direction-aware page score</span>
-              <p class="formula">r<sub>p</sub> = V<sup>0→1</sup>s<sub>p</sub><sup>0→1</sup> + V<sup>1→0</sup>s<sub>p</sub><sup>1→0</sup></p>
+              <div class="score-equation" role="img" aria-label="r sub p equals V zero to one times s sub p zero to one, plus V one to zero times s sub p one to zero">
+                <span class="equation-lhs"><i>r</i><sub>p</sub></span>
+                <span class="equation-equals">=</span>
+                <span class="equation-rhs">
+                  <span><i>V</i><sup>0→1</sup><i>s</i><sub>p</sub><sup>0→1</sup></span>
+                  <span><b>+</b><i>V</i><sup>1→0</sup><i>s</i><sub>p</sub><sup>1→0</sup></span>
+                </span>
+              </div>
+              <p class="equation-note">Available hardware faults × model sensitivity, summed over both flip directions.</p>
               <dl><div><dt>Candidate pool</dt><dd>Top-K, typically 20</dd></div><div><dt>Constraint</dt><dd>Target ASR + TA floor</dd></div><div><dt>Output</dt><dd>DNN → DRAM pages</dd></div></dl>
             </aside>
           </div>
