@@ -72,7 +72,7 @@ h1, h2, h3, p { margin-top: 0; }
 .affiliation { margin-bottom: 25px; color: var(--muted); font-size: var(--text-xs); }
 .overview-visual { position: relative; display: grid; grid-template-rows: auto auto; gap: 12px; align-content: center; align-self: stretch; min-height: 0; }
 .emblem-showcase { display: flex; align-items: center; justify-content: center; gap: 18px; padding: 8px 18px; }
-.emblem-showcase img { width: clamp(112px, 10vw, 152px); height: clamp(112px, 10vw, 152px); flex: 0 0 auto; object-fit: contain; filter: drop-shadow(0 16px 25px rgba(53, 21, 66, .16)); }
+.emblem-showcase img { width: clamp(180px, 16vw, 230px); height: clamp(180px, 16vw, 230px); flex: 0 0 auto; object-fit: contain; filter: drop-shadow(0 16px 25px rgba(53, 21, 66, .16)); }
 .emblem-showcase > div { display: grid; max-width: 245px; }
 .emblem-showcase strong { font-size: var(--text-lg); font-weight: 500; }
 .emblem-showcase span { margin-top: 5px; color: var(--muted); font-size: var(--text-sm); }
@@ -172,7 +172,7 @@ code { font: 500 var(--text-xs)/1.58 ui-monospace, SFMono-Regular, Menlo, Consol
   .use-layout { height: calc(100% - 144px); }
   .method-layout, .results-layout { height: calc(100% - 84px); }
   .overview-copy h1 { font-size: clamp(2.2rem, 4.1vw, 4rem); }
-  .emblem-showcase img { width: 96px; height: 96px; }
+  .emblem-showcase img { width: 190px; height: 190px; }
   .paper-card > img { max-height: 24vh; }
   .workflow-strip { height: 54px; margin-top: 8px; }
 }
