@@ -112,6 +112,8 @@ python main_32bit_mvm.py`
       tab.tabIndex = active ? 0 : -1;
     });
     panels.forEach((panel) => { panel.hidden = panel.id !== id; });
+    document.querySelector(".tab-content")?.scrollTo(0, 0);
+    window.scrollTo(0, 0);
     if (updateHash) history.replaceState(null, "", `#${id}`);
   }
 
