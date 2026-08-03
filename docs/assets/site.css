@@ -131,7 +131,7 @@ code { font: 500 var(--text-xs)/1.58 ui-monospace, SFMono-Regular, Menlo, Consol
 .equation-plus { color: var(--orchid); }
 .score-equation i { font-style: italic; }
 .score-equation sup, .score-equation sub { position: relative; font-size: .58em; line-height: 0; }
-.score-equation sup { top: -.6em; margin-left: 1px; }
+.score-equation sup { top: -.6em; margin-left: 4px; }
 .score-equation sub { bottom: -.15em; margin-left: 1px; }
 .equation-term sup + i { margin-left: 4px; }
 .equation-note { margin: 0; color: var(--muted); font-size: var(--text-base); line-height: 1.5; }
