@@ -1,91 +1,178 @@
 (() => {
-  const reports = {
-    fp32: {
-      label: "ResNet-20 / CIFAR-10 / FP32",
-      asr: [56.48,57.11,58.12,59.61,63.67,64.77,66.48,71.25,72.73,74.69,74.92,76.48,79.30,79.92,80.70,81.80,82.34,82.97,84.45,85.86,87.03,87.19,87.27,87.34,87.42,87.50,87.58,87.66,87.81,87.89,87.97,88.05,88.20,88.28,88.36,88.59,88.67,88.75,88.83,89.06,89.14,89.22,89.30,89.53,89.69,89.77,89.84,89.92,90.00],
-      accuracy: [91.25,91.25,91.64,91.41,90.86,90.31,90.00,88.83,88.75,88.36,88.36,88.36,87.42,87.11,87.11,86.95,86.80,86.41,85.94,85.08,85.23,85.23,85.23,85.00,85.00,85.00,85.00,85.00,85.08,85.16,85.08,85.00,85.00,85.00,85.00,85.08,85.08,85.08,85.08,85.23,85.31,85.08,85.16,85.00,85.00,85.00,85.00,85.00,85.00]
+  const repoUrl = "https://github.com/noisyor/ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference.git";
+  const quickstarts = {
+    "sample-int8": {
+      label: "Sample profile · INT8",
+      title: "Reproduce with the supplied profile",
+      note: "CIFAR-10 downloads automatically. The INT8 runner expects a native INT8 checkpoint with scale factors at the path shown below.",
+      code: `git clone ${repoUrl}
+cd ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference
+
+python -m venv .venv
+source .venv/bin/activate
+pip install "torch>=1.9.0" torchvision numpy matplotlib
+
+unzip profile_results/device1_256MB_4row.npy.zip -d profile_results
+mkdir -p saved_models
+cp /path/to/ResNet20_INT8.pth.tar saved_models/ResNet20_INT8.pth.tar
+
+python analyze_memory_layout.py \\
+  --model saved_models/ResNet20_INT8.pth.tar \\
+  --output pagemaps/ResNet20_INT8_pagemap.txt
+
+python main_8bit_mvm.py`
     },
-    int8: {
-      label: "ResNet-20 / CIFAR-10 / INT8",
-      asr: [59.78,66.91,68.20,69.97,71.91,74.67,77.83,78.69,79.78,80.75,83.22,84.44,85.12,85.61,86.19,86.88,87.53,88.36,88.75,90.17],
-      accuracy: [90.73,88.64,88.30,88.23,87.19,86.98,86.28,85.73,85.20,85.28,85.14,84.50,84.50,84.56,84.50,84.42,84.02,83.78,83.70,83.00]
+    "sample-fp32": {
+      label: "Sample profile · FP32",
+      title: "Reproduce with the supplied profile",
+      note: "CIFAR-10 downloads automatically. The current FP32 runner expects CUDA and the ResNet-20 checkpoint path shown below.",
+      code: `git clone ${repoUrl}
+cd ROBBIN-Rowhammer-Based-Backdoor-Injection-during-Inference
+
+python -m venv .venv
+source .venv/bin/activate
+pip install "torch>=1.9.0" torchvision numpy matplotlib
+
+unzip profile_results/device1_256MB_4row.npy.zip -d profile_results
+mkdir -p saved_model/resnet20_fp32
+cp /path/to/model_best.pth.tar saved_model/resnet20_fp32/model_best.pth.tar
+
+python analyze_memory_layout.py \\
+  --model saved_model/resnet20_fp32/model_best.pth.tar \\
+  --output pagemaps/resnet20_fp32_pagemap.txt
+
+python main_32bit_mvm.py`
+    },
+    "custom-int8": {
+      label: "My DRAM profile · INT8",
+      title: "Use a profile from your test system",
+      note: "Profile only authorized hardware. After conversion, set profiling_file in main_8bit_mvm.py to profile_results/custom.npy before running.",
+      code: `# First complete the sample-profile setup, then convert your
+# authorized Blacksmith JSON profile into ROBBIN's matrix format.
+python create_bitflip_matrix.py \\
+  --profile /path/to/your_profile.json \\
+  --output profile_results/custom.npy
+
+# In main_8bit_mvm.py, set:
+# profiling_file = './profile_results/custom.npy'
+
+python analyze_memory_layout.py \\
+  --model saved_models/ResNet20_INT8.pth.tar \\
+  --output pagemaps/ResNet20_INT8_pagemap.txt
+
+python main_8bit_mvm.py`
+    },
+    "custom-fp32": {
+      label: "My DRAM profile · FP32",
+      title: "Use a profile from your test system",
+      note: "Profile only authorized hardware. After conversion, set profiling_file in main_32bit_mvm.py to profile_results/custom.npy before running.",
+      code: `# First complete the sample-profile setup, then convert your
+# authorized Blacksmith JSON profile into ROBBIN's matrix format.
+python create_bitflip_matrix.py \\
+  --profile /path/to/your_profile.json \\
+  --output profile_results/custom.npy
+
+# In main_32bit_mvm.py, set:
+# profiling_file = './profile_results/custom.npy'
+
+python analyze_memory_layout.py \\
+  --model saved_model/resnet20_fp32/model_best.pth.tar \\
+  --output pagemaps/resnet20_fp32_pagemap.txt
+
+python main_32bit_mvm.py`
     }
   };
 
-  const grid = document.querySelector("#memory-grid");
-  if (grid) {
-    const vulnerable = new Set([7, 19, 33, 46, 67, 79, 92, 105]);
-    const mapped = new Set([20, 45, 66, 91]);
-    for (let index = 0; index < 120; index += 1) {
-      const cell = document.createElement("span");
-      cell.className = "memory-cell";
-      if (vulnerable.has(index)) cell.classList.add("vulnerable");
-      if (mapped.has(index)) cell.classList.add("mapped");
-      grid.appendChild(cell);
+  const results = {
+    int8: {
+      src: "assets/figures/int8-results.png",
+      alt: "INT8 attack success rate and test accuracy for ROBBIN and Don't Knock across three DRAM devices.",
+      caption: "<strong>INT8 ResNet-20.</strong> ROBBIN reaches roughly 90% ASR on all three devices while retaining 83.0–87.0% clean test accuracy.",
+      cards: [
+        ["Device consistency", "90.2 / 90.1 / 90.9%", "ASR on Devices A, B, and C."],
+        ["Clean accuracy", "83.0–87.0%", "TA after the INT8 attack."],
+        ["Page efficiency", "64–73% fewer", "DRAM pages than Don’t Knock on ResNet-20."]
+      ]
+    },
+    fp32: {
+      src: "assets/figures/fp32-results.png",
+      alt: "FP32 attack success rate and test accuracy for ROBBIN and OneFlip across three DRAM devices.",
+      caption: "<strong>FP32 ResNet-20.</strong> ROBBIN maintains about 90% ASR and 85–86% TA across all devices; OneFlip degrades sharply on denser fault profiles.",
+      cards: [
+        ["Device consistency", "90.7 / 90.0 / 90.2%", "ASR on Devices A, B, and C."],
+        ["Clean accuracy", "85.0–86.0%", "TA after the FP32 attack."],
+        ["Collateral damage", "64.2% TA", "OneFlip on the densest evaluated profile."]
+      ]
     }
+  };
+
+  let profile = "sample";
+  let precision = "int8";
+  const code = document.querySelector("#quickstart-code");
+  const runPathLabel = document.querySelector("#run-path-label");
+  const commandTitle = document.querySelector("#command-title");
+  const commandNote = document.querySelector("#command-note");
+
+  function renderQuickstart() {
+    const item = quickstarts[`${profile}-${precision}`];
+    code.textContent = item.code;
+    runPathLabel.textContent = item.label;
+    commandTitle.textContent = item.title;
+    commandNote.innerHTML = `<strong>Before you run:</strong> ${item.note}`;
   }
 
-  const canvas = document.querySelector("#robbin-chart");
-  const range = document.querySelector("#attack-progress");
-  if (!canvas || !range) return;
-
-  const context = canvas.getContext("2d");
-  const buttons = [...document.querySelectorAll("[data-precision]")];
-  const mappingValue = document.querySelector("#mapping-value");
-  const asrValue = document.querySelector("#asr-value");
-  const accuracyValue = document.querySelector("#accuracy-value");
-  const configLabel = document.querySelector("#config-label");
-  const statusLabel = document.querySelector("#status-label");
-  const progressMax = document.querySelector("#progress-max");
-  let precision = "fp32";
-
-  function drawLine(values, count, color, width, height, dpr) {
-    const min = 50;
-    const max = 95;
-    context.beginPath();
-    values.slice(0, count + 1).forEach((value, index) => {
-      const x = (index / (values.length - 1)) * width;
-      const y = height - ((value - min) / (max - min)) * height;
-      if (index === 0) context.moveTo(x, y);
-      else context.lineTo(x, y);
+  document.querySelectorAll("[data-profile]").forEach((button) => {
+    button.addEventListener("click", () => {
+      profile = button.dataset.profile;
+      document.querySelectorAll("[data-profile]").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+      renderQuickstart();
     });
-    context.strokeStyle = color;
-    context.lineWidth = 2 * dpr;
-    context.lineJoin = "round";
-    context.lineCap = "round";
-    context.stroke();
+  });
+
+  document.querySelectorAll("[data-precision]").forEach((button) => {
+    button.addEventListener("click", () => {
+      precision = button.dataset.precision;
+      document.querySelectorAll("[data-precision]").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+      renderQuickstart();
+    });
+  });
+
+  document.querySelectorAll(".copy-button").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const target = document.getElementById(button.dataset.copyTarget);
+      const label = button.textContent;
+      try {
+        await navigator.clipboard.writeText(target.textContent);
+        button.textContent = "Copied";
+        setTimeout(() => { button.textContent = label; }, 1600);
+      } catch {
+        button.textContent = "Select and copy";
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-result]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const item = results[button.dataset.result];
+      document.querySelectorAll("[data-result]").forEach((tab) => tab.setAttribute("aria-pressed", String(tab === button)));
+      const image = document.querySelector("#result-image");
+      image.src = item.src;
+      image.alt = item.alt;
+      document.querySelector("#result-caption").innerHTML = item.caption;
+      document.querySelector("#result-cards").innerHTML = item.cards.map(([label, value, note]) => `<article><span>${label}</span><strong>${value}</strong><p>${note}</p></article>`).join("");
+    });
+  });
+
+  const sectionLinks = [...document.querySelectorAll('.site-tabs a[href^="#"]')];
+  const sections = sectionLinks.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      sectionLinks.forEach((link) => link.toggleAttribute("aria-current", link.getAttribute("href") === `#${visible.target.id}`));
+    }, { rootMargin: "-20% 0px -65%", threshold: [0, 0.2, 0.5] });
+    sections.forEach((section) => observer.observe(section));
   }
 
-  function draw() {
-    const report = reports[precision];
-    const count = Number(range.value);
-    const bounds = canvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = Math.max(1, Math.round(bounds.width * dpr));
-    canvas.height = Math.max(1, Math.round(bounds.height * dpr));
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    drawLine(report.asr, count, "#82c7d8", canvas.width, canvas.height, dpr);
-    drawLine(report.accuracy, count, "#7ed7a8", canvas.width, canvas.height, dpr);
-    mappingValue.textContent = String(count);
-    asrValue.textContent = `${report.asr[count].toFixed(2)}%`;
-    accuracyValue.textContent = `${report.accuracy[count].toFixed(2)}%`;
-    statusLabel.textContent = report.asr[count] >= 90 ? "Target ASR reached" : "Optimization in progress";
-  }
-
-  function selectPrecision(nextPrecision) {
-    precision = nextPrecision;
-    const report = reports[precision];
-    const max = report.asr.length - 1;
-    range.max = String(max);
-    range.value = String(max);
-    configLabel.textContent = report.label;
-    progressMax.textContent = `${max} pages`;
-    buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.precision === precision)));
-    draw();
-  }
-
-  buttons.forEach((button) => button.addEventListener("click", () => selectPrecision(button.dataset.precision)));
-  range.addEventListener("input", draw);
-  window.addEventListener("resize", draw);
-  selectPrecision("fp32");
+  renderQuickstart();
 })();
