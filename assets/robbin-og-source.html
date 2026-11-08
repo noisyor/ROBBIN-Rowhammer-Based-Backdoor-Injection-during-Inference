@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1200, initial-scale=1" />
+    <title>ROBBIN social card</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
+      :root {
+        --ink: #21182a;
+        --muted: #716779;
+        --paper: #fbf8f4;
+        --plum: #351542;
+        --violet: #754087;
+        --orchid: #a965a9;
+        --gold: #dcae54;
+        --line: rgba(73, 45, 84, 0.14);
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        width: 1200px;
+        height: 630px;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      body {
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 7% 91%, rgba(169, 101, 169, 0.17), transparent 34%),
+          radial-gradient(circle at 90% 8%, rgba(117, 64, 135, 0.15), transparent 32%),
+          var(--paper);
+        font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .card {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-columns: 670px 1fr;
+        align-items: center;
+        padding: 54px 58px 52px 68px;
+        isolation: isolate;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        opacity: 0.32;
+        background-image: radial-gradient(circle at 1px 1px, rgba(53, 21, 66, 0.14) 1px, transparent 0);
+        background-size: 26px 26px;
+        mask-image: linear-gradient(100deg, #000, rgba(0,0,0,.38) 66%, transparent 96%);
+      }
+
+      .card::after {
+        content: "";
+        position: absolute;
+        top: -112px;
+        right: -90px;
+        z-index: -1;
+        width: 590px;
+        height: 790px;
+        border-radius: 52% 0 0 52%;
+        background: linear-gradient(150deg, rgba(53, 21, 66, 0.98), rgba(74, 31, 87, 0.96));
+        transform: rotate(7deg);
+        box-shadow: -24px 0 72px rgba(53, 21, 66, 0.15);
+      }
+
+      .copy {
+        position: relative;
+        z-index: 2;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-bottom: 8px;
+      }
+
+      .kicker {
+        margin: 0 0 15px;
+        color: var(--violet);
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        color: var(--violet);
+        font-size: 92px;
+        font-weight: 500;
+        line-height: 0.98;
+        letter-spacing: -0.055em;
+      }
+
+      .title {
+        max-width: 660px;
+        margin: 24px 0 0;
+        color: var(--ink);
+        font-size: 43px;
+        font-weight: 500;
+        line-height: 1.08;
+        letter-spacing: -0.035em;
+      }
+
+      .tagline {
+        max-width: 610px;
+        margin: 25px 0 0;
+        color: #5d3467;
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 1.4;
+      }
+
+      .meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 31px;
+        color: var(--muted);
+        font-size: 17px;
+        font-weight: 500;
+      }
+
+      .dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--orchid);
+      }
+
+      .visual {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        place-items: center;
+        transform: translate(16px, 2px);
+      }
+
+      .visual::before {
+        content: "";
+        position: absolute;
+        width: 430px;
+        height: 430px;
+        border: 1px solid rgba(255,255,255,.16);
+        border-radius: 50%;
+        box-shadow: 0 28px 60px rgba(16, 5, 22, 0.36);
+      }
+
+      .visual img {
+        position: relative;
+        width: 448px;
+        height: 448px;
+        object-fit: contain;
+        filter: drop-shadow(0 24px 34px rgba(12, 3, 18, 0.34));
+      }
+
+      .chip {
+        position: absolute;
+        right: 0;
+        bottom: 4px;
+        padding: 9px 16px;
+        color: #fff;
+        background: rgba(255,255,255,.1);
+        border: 1px solid rgba(255,255,255,.22);
+        border-radius: 999px;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: .02em;
+        backdrop-filter: blur(8px);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <section class="copy">
+        <p class="kicker">ICCAD 2026 · To appear</p>
+        <h1>ROBBIN</h1>
+        <p class="title">Rowhammer-Based Backdoor<br />Injection during Inference</p>
+        <p class="tagline">A hardware-aware backdoor designed around the DRAM bits that can actually flip.</p>
+        <div class="meta"><span>Hardware-aware backdoors</span><i class="dot"></i><span>arXiv:2608.23774</span></div>
+      </section>
+
+      <section class="visual" aria-label="ROBBIN DRAM Rowhammer emblem">
+        <img src="robbin-robin-emblem.png" alt="" />
+        <span class="chip">ROBBIN</span>
+      </section>
+    </main>
+  </body>
+</html>
